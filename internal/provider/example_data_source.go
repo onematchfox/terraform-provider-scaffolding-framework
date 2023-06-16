@@ -28,8 +28,9 @@ type ExampleDataSource struct {
 
 // ExampleDataSourceModel describes the data source data model.
 type ExampleDataSourceModel struct {
-	ConfigurableAttribute types.String `tfsdk:"configurable_attribute"`
-	Id                    types.String `tfsdk:"id"`
+	ConfigurableAttribute    types.String    `tfsdk:"configurable_attribute"`
+	Id                       types.String    `tfsdk:"id"`
+	ComputedNestedAttributes *ComputedObject `tfsdk:"computed_nested"`
 }
 
 func (d *ExampleDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -49,6 +50,16 @@ func (d *ExampleDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Example identifier",
 				Computed:            true,
+			},
+			"computed_nested": schema.SingleNestedAttribute{
+				MarkdownDescription: "Example nested computed attributes",
+				Computed:            true,
+				Attributes: map[string]schema.Attribute{
+					"computed": schema.BoolAttribute{
+						MarkdownDescription: "Computed attribute",
+						Computed:            true,
+					},
+				},
 			},
 		},
 	}

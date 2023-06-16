@@ -33,9 +33,14 @@ type ExampleResource struct {
 
 // ExampleResourceModel describes the resource data model.
 type ExampleResourceModel struct {
-	ConfigurableAttribute types.String `tfsdk:"configurable_attribute"`
-	Defaulted             types.String `tfsdk:"defaulted"`
-	Id                    types.String `tfsdk:"id"`
+	ConfigurableAttribute    types.String    `tfsdk:"configurable_attribute"`
+	Defaulted                types.String    `tfsdk:"defaulted"`
+	Id                       types.String    `tfsdk:"id"`
+	ComputedNestedAttributes *ComputedObject `tfsdk:"computed_nested"`
+}
+
+type ComputedObject struct {
+	Computed types.Bool `tfsdk:"computed"`
 }
 
 func (r *ExampleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -63,6 +68,16 @@ func (r *ExampleResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "Example identifier",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"computed_nested": schema.SingleNestedAttribute{
+				MarkdownDescription: "Example nested computed attributes",
+				Computed:            true,
+				Attributes: map[string]schema.Attribute{
+					"computed": schema.BoolAttribute{
+						MarkdownDescription: "Computed attribute",
+						Computed:            true,
+					},
 				},
 			},
 		},
